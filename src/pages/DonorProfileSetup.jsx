@@ -49,8 +49,14 @@ export default function DonorProfileSetup() {
       return
     }
 
+    if (!currentUser?.uid) {
+      setError('User not authenticated. Please login again.')
+      return
+    }
+
     setLoading(true)
     try {
+      console.log('Saving user profile for:', currentUser.uid)
       await saveUser(currentUser.uid, {
         name: formData.name,
         bloodType: formData.bloodType,
@@ -60,8 +66,10 @@ export default function DonorProfileSetup() {
         role: 'donor',
         email: currentUser.email,
       })
+      console.log('Profile saved successfully')
       navigate('/donor/dashboard')
     } catch (err) {
+      console.error('Profile save error:', err)
       setError(err.message || 'Failed to save profile')
     } finally {
       setLoading(false)

@@ -58,6 +58,17 @@ export default function Navbar() {
                 </Link>
               )}
 
+              <Link
+                to="/all-donors"
+                className={`px-4 py-2 rounded-lg transition ${
+                  location.pathname === '/all-donors'
+                    ? 'bg-blood text-white'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                All Donors
+              </Link>
+
               <button
                 onClick={handleLogout}
                 className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"

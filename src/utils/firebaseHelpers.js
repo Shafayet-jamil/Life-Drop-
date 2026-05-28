@@ -89,12 +89,11 @@ export const getRequest = async (requestId) => {
   return snapshot.exists() ? { id: snapshot.id, ...snapshot.data() } : null
 }
 
-// Get all available donors
+// Get all donors
 export const getAvailableDonors = async () => {
   const q = query(
     collection(db, 'users'),
     where('role', '==', 'donor'),
-    where('isAvailable', '==', true),
     orderBy('name')
   )
   const snapshot = await getDocs(q)
@@ -129,8 +128,7 @@ export const listenToReceiverRequests = (receiverId, callback) => {
 export const listenToAvailableDonors = (callback) => {
   const q = query(
     collection(db, 'users'),
-    where('role', '==', 'donor'),
-    where('isAvailable', '==', true)
+    where('role', '==', 'donor')
   )
   return onSnapshot(q, (snapshot) => {
     const donors = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
