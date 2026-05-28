@@ -110,6 +110,8 @@ export default function RequestDetail() {
                   ? 'bg-yellow-500'
                   : request.status === 'accepted'
                   ? 'bg-green-500'
+                  : request.status === 'completed'
+                  ? 'bg-blue-500'
                   : 'bg-red-500'
               }`}
             >
@@ -193,9 +195,28 @@ export default function RequestDetail() {
             </div>
           )}
 
-          {request.status !== 'pending' && (
+          {request.status === 'accepted' && (
+            <div className="flex gap-4">
+              <button
+                onClick={handleComplete}
+                disabled={submitting}
+                className="flex-1 bg-blue-500 text-white py-3 rounded-lg font-semibold hover:bg-blue-600 disabled:opacity-50"
+              >
+                {submitting ? 'Processing...' : '✓ Mark as Completed'}
+              </button>
+              <button
+                onClick={handleDecline}
+                disabled={submitting}
+                className="flex-1 bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 disabled:opacity-50"
+              >
+                {submitting ? 'Processing...' : 'Cancel'}
+              </button>
+            </div>
+          )}
+
+          {request.status !== 'pending' && request.status !== 'accepted' && (
             <div className="p-4 bg-gray-100 text-gray-700 rounded-lg text-center font-semibold">
-              This request has already been {request.status}.
+              This request has been {request.status}.
             </div>
           )}
         </div>

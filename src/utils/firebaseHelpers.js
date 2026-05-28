@@ -144,3 +144,95 @@ export const listenToSingleUser = (userId, callback) => {
     }
   })
 }
+
+// Review operations
+export const saveReview = async (reviewData) => {
+  const reviewsRef = collection(db, 'reviews')
+  const docRef = await addDoc(reviewsRef, {
+    ...reviewData,
+    createdAt: new Date(),
+  })
+  
+  // Update donor's rating stats
+  await updateDonorRatingStats(reviewData.donorId)
+  
+  return docRef.id
+}
+
+export const getReviewsForDonor = async (donorId) => {
+  const q = query(
+    collection(db, 'reviews'),
+    where('donorId', '==', donorId),
+    orderBy('createdAt', 'desc')
+  )
+  const snapshot = await getDocs(q)
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+}
+
+export const listenToReviewsForDonor = (donorId, callback) => {
+  const q = query(
+    collection(db, 'reviews'),
+    where('donorId', '==', donorId),
+    orderBy('createdAt', 'desc')
+  )
+  return onSnapshot(q, (snapshot) => {
+    const reviews = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+    callback(reviews)
+  })
+}
+
+export const updateDonorRatingStats = async (donorId) => {
+  const reviews = await getReviewsForDonor(donorId)
+  
+  if (reviews.length === 0) {
+    await updateDoc(doc(db, 'users', donorId), {
+      averageRating: 0,
+      reviewCount: 0,
+    })
+    return
+  }
+  
+  const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0)
+  const averageRating = (totalRating / reviews.length).toFixed(1)
+  
+  await updateDoc(doc(db, 'users', donorId), {
+    averageRating: parseFloat(averageRating),
+    reviewCount: reviews.length,
+  })
+}
+
+// Donation tracking operations
+export const updateDonationStats = async (donorId) => {
+  const userRef = doc(db, 'users', donorId)
+  const userDoc = await getDoc(userRef)
+  
+  if (userDoc.exists()) {
+    const currentDonations = userDoc.data().totalDonations || 0
+    await updateDoc(userRef, {
+      totalDonations: currentDonations + 1,
+      lastDonationDate: new Date(),
+    })
+  }
+}
+
+export const getDonorStats = async (donorId) => {
+  const userRef = doc(db, 'users', donorId)
+  const userDoc = await getDoc(userRef)
+  
+  if (userDoc.exists()) {
+    const data = userDoc.data()
+    return {
+      totalDonations: data.totalDonations || 0,
+      lastDonationDate: data.lastDonationDate || null,
+      averageRating: data.averageRating || 0,
+      reviewCount: data.reviewCount || 0,
+    }
+  }
+  
+  return {
+    totalDonations: 0,
+    lastDonationDate: null,
+    averageRating: 0,
+    reviewCount: 0,
+  }
+}

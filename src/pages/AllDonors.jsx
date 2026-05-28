@@ -3,6 +3,7 @@ import { useAuth } from '../hooks/useAuth'
 import { useFirestore } from '../hooks/useFirestore'
 import LoadingSpinner from '../components/LoadingSpinner'
 import EmptyState from '../components/EmptyState'
+import DonationStats from '../components/DonationStats'
 import { useNavigate } from 'react-router-dom'
 
 export default function AllDonors() {
@@ -75,8 +76,23 @@ export default function AllDonors() {
 
                   <div className="pt-4 border-t">
                     <span className="inline-block px-4 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold">
-                      ✓ Available
+                      ✓ Registered
                     </span>
+                  </div>
+
+                  {/* Donor Stats */}
+                  <div className="pt-4 space-y-2">
+                    {donor.averageRating > 0 && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-yellow-400">★</span>
+                        <span className="text-sm font-semibold text-gray-700">
+                          {donor.averageRating} ({donor.reviewCount} review{donor.reviewCount !== 1 ? 's' : ''})
+                        </span>
+                      </div>
+                    )}
+                    <div className="text-xs text-gray-600">
+                      <p>💉 {donor.totalDonations || 0} donation{donor.totalDonations !== 1 ? 's' : ''}</p>
+                    </div>
                   </div>
 
                   {userRole === 'receiver' && (

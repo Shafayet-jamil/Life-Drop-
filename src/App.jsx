@@ -11,6 +11,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import DonorProfileSetup from './pages/DonorProfileSetup'
 import DonorDashboard from './pages/DonorDashboard'
+import DonorProfile from './pages/DonorProfile'
 import RequestDetail from './pages/RequestDetail'
 import SearchDonors from './pages/SearchDonors'
 import SendRequest from './pages/SendRequest'
@@ -50,6 +51,14 @@ function AppContent() {
               <DonorDashboard />
             </ProtectedRoute>
           }
+        />
+        <Route
+          path="/donor/:donorId"
+          element={<DonorProfile />}
+        />
+        <Route
+          path="/receiver/donor/:donorId"
+          element={<DonorProfile />}
         />
         <Route
           path="/donor/requests/:requestId"
