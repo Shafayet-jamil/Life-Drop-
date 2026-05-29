@@ -40,22 +40,36 @@ export default function SearchDonors() {
   if (loading) return <LoadingSpinner />
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Find Available Donors</h1>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 py-12 px-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-12 text-center">
+          <div className="inline-block mb-4">
+            <span className="text-6xl">🩸</span>
+          </div>
+          <h1 className="text-5xl md:text-6xl font-black text-gray-900 mb-4">
+            Find Blood Donors
+          </h1>
+          <p className="text-xl text-gray-600 font-semibold max-w-2xl mx-auto">
+            Connect with available blood donors in your area. Save lives by finding compatible donors quickly and easily.
+          </p>
+        </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-          <h2 className="font-semibold text-gray-900 mb-4">Search & Filter</h2>
-          <div className="grid md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-3xl shadow-2xl p-8 mb-12 border border-gray-100">
+          <h2 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-2">
+            🔍 Search & Filter
+          </h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Blood Type Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Blood Type
+              <label className="block text-sm font-black text-gray-900 mb-3">
+                💧 Blood Type
               </label>
               <select
                 value={bloodTypeFilter}
                 onChange={(e) => setBloodTypeFilter(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:border-blood focus:outline-none focus:ring-2 focus:ring-blood/20"
+                className="w-full border-2 border-gray-300 rounded-xl px-5 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400/30 font-semibold text-gray-800 bg-white hover:border-gray-400 transition"
               >
                 <option value="">All blood types</option>
                 {BLOOD_TYPES.map((type) => (
@@ -66,14 +80,17 @@ export default function SearchDonors() {
               </select>
             </div>
 
+            {/* City Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+              <label className="block text-sm font-black text-gray-900 mb-3">
+                📍 Location
+              </label>
               <input
                 type="text"
                 value={cityFilter}
                 onChange={(e) => setCityFilter(e.target.value)}
                 placeholder="Search by city..."
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:border-blood focus:outline-none focus:ring-2 focus:ring-blood/20"
+                className="w-full border-2 border-gray-300 rounded-xl px-5 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400/30 font-semibold text-gray-800 placeholder-gray-500 hover:border-gray-400 transition"
               />
             </div>
           </div>
@@ -90,11 +107,21 @@ export default function SearchDonors() {
             }
           />
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredDonors.map((donor) => (
-              <DonorProfileCard key={donor.id} donor={donor} showFullProfile={false} />
-            ))}
-          </div>
+          <>
+            {/* Results Count */}
+            <div className="mb-8 text-center">
+              <p className="text-lg font-black text-gray-900">
+                Found <span className="text-3xl text-blue-600">{filteredDonors.length}</span> Available {filteredDonors.length === 1 ? 'Donor' : 'Donors'}
+              </p>
+            </div>
+
+            {/* Cards Grid */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredDonors.map((donor) => (
+                <DonorProfileCard key={donor.id} donor={donor} showFullProfile={false} />
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>
