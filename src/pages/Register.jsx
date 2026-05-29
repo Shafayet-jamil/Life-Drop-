@@ -25,27 +25,44 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <div className="text-center mb-8">
-            <div className="w-12 h-12 bg-blood rounded-full flex items-center justify-center text-white font-bold mx-auto mb-4">
+        {/* Card Container */}
+        <div className="bg-white rounded-3xl shadow-2xl p-10 border border-gray-100">
+          {/* Header */}
+          <div className="text-center mb-10">
+            <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center text-white font-black text-2xl mx-auto mb-6 shadow-lg">
               LD
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">LifeDrop</h1>
-            <p className="text-gray-600 mt-2">Create your account</p>
+            <h1 className="text-3xl font-black text-gray-900 mb-2">LifeDrop</h1>
+            <p className="text-gray-600 font-semibold">Create your account and start making a difference</p>
           </div>
 
+          {/* Register Form */}
           <RegisterForm onSubmit={handleRegister} loading={loading} />
 
-          <p className="text-center text-gray-600 mt-6">
+          {/* Divider */}
+          <div className="my-8 flex items-center gap-4">
+            <div className="flex-1 h-px bg-gray-300"></div>
+            <span className="text-gray-500 font-semibold">OR</span>
+            <div className="flex-1 h-px bg-gray-300"></div>
+          </div>
+
+          {/* Login Link */}
+          <p className="text-center text-gray-700 font-semibold">
             Already have an account?{' '}
-            <Link to="/login" className="text-blood font-semibold hover:underline">
+            <Link to="/login" className="bg-gradient-to-r from-red-600 to-red-800 bg-clip-text text-transparent font-black hover:underline">
               Login here
             </Link>
           </p>
         </div>
+
+        {/* Footer */}
+        <p className="text-center text-gray-500 font-semibold mt-8">
+          Join our community of life savers 🩸
+        </p>
       </div>
     </div>
   )
 }
+
