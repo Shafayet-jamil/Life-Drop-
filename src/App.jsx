@@ -11,10 +11,12 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import DonorProfileSetup from './pages/DonorProfileSetup'
 import DonorDashboard from './pages/DonorDashboard'
+import DonorProfile from './pages/DonorProfile'
 import RequestDetail from './pages/RequestDetail'
 import SearchDonors from './pages/SearchDonors'
 import SendRequest from './pages/SendRequest'
 import MyRequests from './pages/MyRequests'
+import AdminDashboard from './pages/AdminDashboard'
 import NotFound from './pages/NotFound'
 import Navbar from './components/Navbar'
 
@@ -82,6 +84,22 @@ function AppContent() {
           element={
             <ProtectedRoute requiredRole="receiver">
               <MyRequests />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Donor Profile - Public route */}
+        <Route
+          path="/donor/profile/:donorId"
+          element={<DonorProfile />}
+        />
+
+        {/* Admin routes */}
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminDashboard />
             </ProtectedRoute>
           }
         />

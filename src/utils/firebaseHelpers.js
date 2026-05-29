@@ -100,6 +100,30 @@ export const getAvailableDonors = async () => {
   return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
 }
 
+// Get all users (for admin)
+export const getAllUsers = async () => {
+  try {
+    const usersCollection = collection(db, 'users')
+    const snapshot = await getDocs(usersCollection)
+    const users = snapshot.docs.map((doc) => {
+      const data = doc.data()
+      return {
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt || new Date()
+      }
+    })
+    return users.sort((a, b) => {
+      const dateA = a.createdAt?.toDate?.() || new Date(a.createdAt)
+      const dateB = b.createdAt?.toDate?.() || new Date(b.createdAt)
+      return new Date(dateB) - new Date(dateA)
+    })
+  } catch (error) {
+    console.error('getAllUsers error:', error.code, error.message)
+    throw error
+  }
+}
+
 // Real-time listener utilities
 export const listenToIncomingRequests = (donorId, callback) => {
   const q = query(
@@ -143,4 +167,36 @@ export const listenToSingleUser = (userId, callback) => {
       callback({ id: snapshot.id, ...snapshot.data() })
     }
   })
+}
+
+// Reviews operations
+export const saveReview = async (donorId, receiverId, review) => {
+  const reviewsRef = collection(db, 'reviews')
+  return await addDoc(reviewsRef, {
+    donorId,
+    receiverId,
+    ...review,
+    createdAt: new Date(),
+  })
+}
+
+export const getDonorReviews = async (donorId) => {
+  const q = query(
+    collection(db, 'reviews'),
+    where('donorId', '==', donorId),
+    orderBy('createdAt', 'desc')
+  )
+  const snapshot = await getDocs(q)
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+}
+
+// Donation count
+export const getDonationCount = async (donorId) => {
+  const q = query(
+    collection(db, 'requests'),
+    where('donorId', '==', donorId),
+    where('status', '==', 'accepted')
+  )
+  const snapshot = await getDocs(q)
+  return snapshot.size
 }

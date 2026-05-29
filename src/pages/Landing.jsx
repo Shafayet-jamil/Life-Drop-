@@ -8,7 +8,9 @@ export default function Landing() {
 
   useEffect(() => {
     if (currentUser) {
-      if (userRole === 'donor') {
+      if (userRole === 'admin') {
+        navigate('/admin/dashboard')
+      } else if (userRole === 'donor') {
         navigate('/donor/dashboard')
       } else if (userRole === 'receiver') {
         navigate('/receiver/requests')

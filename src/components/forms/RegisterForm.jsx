@@ -115,6 +115,19 @@ export default function RegisterForm({ onSubmit, loading }) {
               <strong>Receiver</strong> - I need blood
             </span>
           </label>
+          <label className="flex items-center gap-3">
+            <input
+              type="radio"
+              name="role"
+              value="admin"
+              checked={role === 'admin'}
+              onChange={(e) => setRole(e.target.value)}
+              className="w-4 h-4"
+            />
+            <span className="text-gray-700">
+              <strong>Admin</strong> - I manage the platform
+            </span>
+          </label>
         </div>
       </div>
 

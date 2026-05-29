@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useFirestore } from '../hooks/useFirestore'
 import LoadingSpinner from '../components/LoadingSpinner'
 import EmptyState from '../components/EmptyState'
+import DonorProfileCard from '../components/DonorProfileCard'
 
 const BLOOD_TYPES = ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+']
 
@@ -92,35 +92,7 @@ export default function SearchDonors() {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredDonors.map((donor) => (
-              <div
-                key={donor.id}
-                className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition"
-              >
-                <div className="bg-blood text-white p-4">
-                  <h3 className="text-xl font-bold">{donor.name}</h3>
-                  <p className="text-red-100">{donor.bloodType}</p>
-                </div>
-
-                <div className="p-6">
-                  <div className="space-y-3 mb-6">
-                    <div>
-                      <p className="text-sm text-gray-600">City</p>
-                      <p className="font-semibold text-gray-800">{donor.city}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600">Phone</p>
-                      <p className="font-semibold text-gray-800">{donor.phone}</p>
-                    </div>
-                  </div>
-
-                  <Link
-                    to={`/receiver/requests/${donor.id}/send`}
-                    className="w-full block text-center bg-blood text-white py-2 rounded-lg hover:bg-red-700 font-semibold transition"
-                  >
-                    Request Blood
-                  </Link>
-                </div>
-              </div>
+              <DonorProfileCard key={donor.id} donor={donor} showFullProfile={false} />
             ))}
           </div>
         )}

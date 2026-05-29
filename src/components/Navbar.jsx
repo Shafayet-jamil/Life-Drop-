@@ -16,7 +16,12 @@ export default function Navbar() {
   }
 
   const getDashboardLink = () => {
+    if (userRole === 'admin') return '/admin/dashboard'
     return userRole === 'donor' ? '/donor/dashboard' : '/receiver/requests'
+  }
+
+  const getDashboardLabel = () => {
+    return userRole === 'admin' ? 'Admin Panel' : userRole === 'donor' ? 'Dashboard' : 'My Requests'
   }
 
   return (
@@ -36,13 +41,13 @@ export default function Navbar() {
                 to={getDashboardLink()}
                 className={`px-4 py-2 rounded-lg transition ${
                   location.pathname.includes(
-                    userRole === 'donor' ? '/donor' : '/receiver'
+                    userRole === 'admin' ? '/admin' : userRole === 'donor' ? '/donor' : '/receiver'
                   )
                     ? 'bg-blood text-white'
                     : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
-                {userRole === 'donor' ? 'Dashboard' : 'My Requests'}
+                {getDashboardLabel()}
               </Link>
 
               {userRole === 'receiver' && (
@@ -58,16 +63,18 @@ export default function Navbar() {
                 </Link>
               )}
 
-              <Link
-                to="/all-donors"
-                className={`px-4 py-2 rounded-lg transition ${
-                  location.pathname === '/all-donors'
-                    ? 'bg-blood text-white'
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                All Donors
-              </Link>
+              {userRole !== 'admin' && (
+                <Link
+                  to="/all-donors"
+                  className={`px-4 py-2 rounded-lg transition ${
+                    location.pathname === '/all-donors'
+                      ? 'bg-blood text-white'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  All Donors
+                </Link>
+              )}
 
               <button
                 onClick={handleLogout}

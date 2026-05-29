@@ -14,6 +14,8 @@ export default function Register() {
       await signup(email, password, role)
       if (role === 'donor') {
         navigate('/donor/setup')
+      } else if (role === 'admin') {
+        navigate('/admin/dashboard')
       } else {
         navigate('/receiver/search')
       }
