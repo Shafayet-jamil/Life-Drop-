@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { listenToReceiverRequests, getUserProfile } from '../utils/firebaseHelpers'
 import LoadingSpinner from '../components/LoadingSpinner'
-import EmptyState from '../components/EmptyState'
 
 export default function MyRequests() {
   const { currentUser } = useAuth()
@@ -52,101 +51,123 @@ export default function MyRequests() {
   if (loading) return <LoadingSpinner />
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">My Blood Requests</h1>
-          <Link
-            to="/receiver/search"
-            className="bg-blood text-white px-6 py-2 rounded-lg hover:bg-red-700 font-semibold"
-          >
-            + New Request
-          </Link>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 py-12 px-4">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+          <div>
+            <h1 className="text-5xl font-black text-gray-900 mb-2">🩸 My Blood Requests</h1>
+            <p className="text-gray-600 font-semibold">Track all your blood requests here</p>
+          </div>
+          <div className="flex gap-4 flex-wrap">
+            <Link
+              to="/receiver/search"
+              className="px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl font-black text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              🔍 Search Donors
+            </Link>
+            <Link
+              to="/receiver/search"
+              className="px-8 py-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl font-black text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              ➕ New Request
+            </Link>
+          </div>
         </div>
 
         {requests.length === 0 ? (
-          <EmptyState
-            title="No requests yet"
-            message="You haven't sent any blood requests. Start by searching for available donors."
-            action={
-              <Link
-                to="/receiver/search"
-                className="inline-block bg-blood text-white px-6 py-2 rounded-lg hover:bg-red-700"
-              >
-                Search Donors
-              </Link>
-            }
-          />
+          <div className="bg-white rounded-3xl shadow-2xl p-16 text-center border border-gray-100">
+            <p className="text-6xl mb-6">📋</p>
+            <h2 className="text-3xl font-black text-gray-900 mb-3">No Requests Yet</h2>
+            <p className="text-xl text-gray-600 font-semibold mb-8">
+              You haven't sent any blood requests. Start by searching for available donors.
+            </p>
+            <Link
+              to="/receiver/search"
+              className="inline-block px-10 py-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl font-black text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              🔍 Search Donors Now
+            </Link>
+          </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {requests.map((request) => (
               <div
                 key={request.id}
-                className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition"
+                className="bg-white rounded-2xl shadow-lg hover:shadow-2xl p-8 transition-all duration-300 border border-gray-100 hover:border-gray-300"
               >
-                <div className="flex justify-between items-start mb-4">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6">
                   <div>
-                    <h3 className="text-xl font-semibold text-gray-900">
-                      {request.bloodType} Blood Request
-                    </h3>
-                    <p className="text-gray-600 text-sm mt-1">
-                      {request.city} •{' '}
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className="text-4xl">💧</span>
+                      <h3 className="text-2xl font-black text-gray-900">
+                        {request.bloodType} Blood Request
+                      </h3>
+                    </div>
+                    <p className="text-gray-600 font-semibold">
+                      📍 {request.city} • {' '}
                       {new Date(request.createdAt?.toDate?.() || request.createdAt).toLocaleDateString()}
                     </p>
                   </div>
                   <span
-                    className={`px-4 py-2 rounded-full text-sm font-semibold ${getStatusColor(
+                    className={`px-6 py-3 rounded-xl text-sm font-black whitespace-nowrap ${getStatusColor(
                       request.status
                     )}`}
                   >
-                    {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                    {request.status === 'pending' && '⏳ PENDING'}
+                    {request.status === 'accepted' && '✅ ACCEPTED'}
+                    {request.status === 'declined' && '❌ DECLINED'}
                   </span>
                 </div>
 
+                {request.message && (
+                  <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <p className="text-sm text-gray-600 font-black mb-2">📝 Your Message:</p>
+                    <p className="text-gray-800 font-semibold">{request.message}</p>
+                  </div>
+                )}
+
                 {request.status === 'accepted' && donorProfiles[request.donorId] && (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
-                    <h4 className="font-semibold text-gray-900 mb-3">Donor Accepted! 🎉</h4>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm text-gray-600">Name</p>
-                        <p className="font-semibold text-gray-800">
-                          {donorProfiles[request.donorId].name}
-                        </p>
+                  <div className="mb-6 bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-200 rounded-xl p-6">
+                    <p className="text-lg font-black text-green-900 mb-4">✅ DONOR ACCEPTED! 🎉</p>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="bg-white p-4 rounded-lg">
+                        <p className="text-sm text-gray-600 font-black mb-1">👤 NAME</p>
+                        <p className="font-bold text-gray-900 text-lg">{donorProfiles[request.donorId].name}</p>
                       </div>
-                      <div>
-                        <p className="text-sm text-gray-600">Phone</p>
-                        <p className="font-semibold text-gray-800">
-                          {donorProfiles[request.donorId].phone}
-                        </p>
+                      <div className="bg-white p-4 rounded-lg">
+                        <p className="text-sm text-gray-600 font-black mb-1">📞 PHONE</p>
+                        <p className="font-bold text-gray-900 text-lg">{donorProfiles[request.donorId].phone}</p>
                       </div>
-                      <div>
-                        <p className="text-sm text-gray-600">Email</p>
-                        <p className="font-semibold text-gray-800">
-                          {donorProfiles[request.donorId].email}
-                        </p>
+                      <div className="bg-white p-4 rounded-lg">
+                        <p className="text-sm text-gray-600 font-black mb-1">📧 EMAIL</p>
+                        <p className="font-bold text-gray-900">{donorProfiles[request.donorId].email}</p>
                       </div>
-                      <div>
-                        <p className="text-sm text-gray-600">City</p>
-                        <p className="font-semibold text-gray-800">
-                          {donorProfiles[request.donorId].city}
-                        </p>
+                      <div className="bg-white p-4 rounded-lg">
+                        <p className="text-sm text-gray-600 font-black mb-1">📍 LOCATION</p>
+                        <p className="font-bold text-gray-900">{donorProfiles[request.donorId].city}</p>
                       </div>
                     </div>
                   </div>
                 )}
 
                 {request.status === 'declined' && (
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                  <div className="mb-6 bg-gradient-to-br from-red-50 to-red-100 border-2 border-red-200 rounded-xl p-6">
+                    <p className="text-lg font-black text-red-900 mb-2">❌ REQUEST DECLINED</p>
                     <p className="text-red-800 font-semibold">
-                      This donor has declined your request. You can search for other donors.
+                      This donor has declined your request. Search for other available donors.
                     </p>
                   </div>
                 )}
 
-                <p className="text-gray-700 bg-gray-50 p-4 rounded-lg">
-                  <strong>Your message:</strong> <br />
-                  {request.message}
-                </p>
+                {request.status === 'pending' && (
+                  <Link
+                    to={`/donor/profile/${request.donorId}`}
+                    className="inline-block px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg font-bold transition-all duration-300 shadow-lg hover:shadow-xl"
+                  >
+                    👁️ View Donor Profile
+                  </Link>
+                )}
               </div>
             ))}
           </div>
